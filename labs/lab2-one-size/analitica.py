@@ -113,8 +113,13 @@ def agregar_lote(r, keys: list[str], sums: dict[str, float], counts: dict[str, i
     #      en sums[pt] y 1 en counts[pt]. dict.get(pt, 0) evita el KeyError.
     # Verificación automática: mismos conteos y promedios que Postgres sobre las
     # mismas filas. Usted acaba de escribir el HashAggregate del plan de Postgres.
-    raise NotImplementedError("TODO 3: agregar_lote()")
+    pipe = r.pipeline(transaction=False)
+    for k in keys:
+        pipe.hmget(k, "payment_type", "fare_amount")
 
+    for pt, fare in pipe.execute():
+        sums[pt] = sums.get(pt, 0.0) + float(fare)
+        counts[pt] = counts.get(pt, 0) + 1
 
 def valkey() -> tuple[int, dict[str, tuple[float, int]]]:
     r = valkey_connect()

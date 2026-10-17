@@ -1,0 +1,29 @@
+Finalize GroupAggregate  (cost=292190.80..292191.86 rows=4 width=42) (actual time=1226.026..1230.458 rows=5 loops=1)
+  Group Key: payment_type
+  Buffers: shared hit=14 read=211656
+  ->  Gather Merge  (cost=292190.80..292191.73 rows=8 width=42) (actual time=1226.008..1230.432 rows=13 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=14 read=211656
+        ->  Sort  (cost=291190.77..291190.78 rows=4 width=42) (actual time=1213.648..1213.649 rows=4 loops=3)
+              Sort Key: payment_type
+              Sort Method: quicksort  Memory: 25kB
+              Buffers: shared hit=14 read=211656
+              Worker 0:  Sort Method: quicksort  Memory: 25kB
+              Worker 1:  Sort Method: quicksort  Memory: 25kB
+              ->  Partial HashAggregate  (cost=291190.68..291190.73 rows=4 width=42) (actual time=1213.629..1213.632 rows=4 loops=3)
+                    Group Key: payment_type
+                    Batches: 1  Memory Usage: 24kB
+                    Buffers: shared read=211656
+                    Worker 0:  Batches: 1  Memory Usage: 24kB
+                    Worker 1:  Batches: 1  Memory Usage: 24kB
+                    ->  Parallel Seq Scan on trips  (cost=0.00..257104.39 rows=4544839 width=7) (actual time=0.019..364.550 rows=3635619 loops=3)
+                          Buffers: shared read=211656
+Planning:
+  Buffers: shared hit=38 read=8
+Planning Time: 0.703 ms
+JIT:
+  Functions: 21
+  Options: Inlining false, Optimization false, Expressions true, Deforming true
+  Timing: Generation 1.923 ms, Inlining 0.000 ms, Optimization 0.912 ms, Emission 14.759 ms, Total 17.594 ms
+Execution Time: 1231.463 ms

@@ -1,0 +1,139 @@
+================================================================================
+Evidencia de consola, Laboratorio 2 TI-4601 "One size fits all?"
+================================================================================
+Maquina : ASUS ROG Strix G513QY, AMD Ryzen 9 5980HX
+SO      : Microsoft Windows 11 Home 10.0.26200, con Docker Desktop
+RAM     : 63,4 GB
+Perfil  : completo (10 906 858 filas en Postgres, 1 000 000 en Valkey)
+Motores : Postgres 16 y Valkey 8.1, en contenedores
+Fecha   : 17 de octubre de 2026
+
+
+================================================================================
+PASO 1 - cargar.py (verifica TODO 1 y TODO 2)
+================================================================================
+
+PS C:\Users\Usuario\Documents\GitHub\lab2-bda> docker compose run --rm app python3 labs/lab2-one-size/cargar.py
+ ✔ Container ti4601-postgres  Running
+Postgres: COPY de todo el archivo
+  [1-carga] postgres                     filas                      10,906,858.000 filas
+  [1-carga] postgres                     tiempo_copy                        54.848 s
+  [1-carga] postgres                     filas_por_s                   198,854.458 filas/s
+  [1-carga] postgres                     tiempo_indice_pk                    3.396 s
+  OK: TODO 1: total >= heap + índices, y ambos > 0
+  [1-carga] postgres                     disco_tabla                     1,653.562 MiB
+  [1-carga] postgres                     disco_indices                     233.656 MiB
+  [1-carga] postgres                     disco_total                     1,887.703 MiB
+  [1-carga] postgres                     bytes_por_fila                    181.482 B/fila
+Valkey: HSET de 1,000,000 filas
+  OK: TODO 2: Valkey tiene 1,000,000 llaves trip:*
+  OK: TODO 2: el último viaje tiene el campo fare_amount
+  [1-carga] valkey                       filas                       1,000,000.000 filas
+  [1-carga] valkey                       tiempo_carga                       44.193 s
+  [1-carga] valkey                       filas_por_s                    22,628.150 filas/s
+  [1-carga] valkey                       ram_usada                         523.909 MiB
+  [1-carga] valkey                       bytes_por_fila                    549.359 B/fila
+  [1-carga] valkey                       ram_extrapolada_total           5,714.205 MiB
+
+
+================================================================================
+PASO 2 - analitica.py (verifica TODO 3)
+================================================================================
+
+PS C:\Users\Usuario\Documents\GitHub\lab2-bda> docker compose run --rm app python3 labs/lab2-one-size/analitica.py
+ ✔ Container ti4601-postgres  Running
+Valkey: SCAN + HMGET, agregado en el cliente
+  [2-olap] valkey                       agregado_en_cliente            11,356.125 ms
+Postgres: EXPLAIN ANALYZE y corridas
+Finalize GroupAggregate  (cost=292190.80..292191.86 rows=4 width=42) (actual time=1226.026..1230.458 rows=5 loops=1)
+  Group Key: payment_type
+  Buffers: shared hit=14 read=211656
+  ->  Gather Merge  (cost=292190.80..292191.73 rows=8 width=42) (actual time=1226.008..1230.432 rows=13 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=14 read=211656
+        ->  Sort  (cost=291190.77..291190.78 rows=4 width=42) (actual time=1213.648..1213.649 rows=4 loops=3)
+              Sort Key: payment_type
+              Sort Method: quicksort  Memory: 25kB
+              Buffers: shared hit=14 read=211656
+              Worker 0:  Sort Method: quicksort  Memory: 25kB
+              Worker 1:  Sort Method: quicksort  Memory: 25kB
+              ->  Partial HashAggregate  (cost=291190.68..291190.73 rows=4 width=42) (actual time=1213.629..1213.632 rows=4 loops=3)
+                    Group Key: payment_type
+                    Batches: 1  Memory Usage: 24kB
+                    Buffers: shared read=211656
+                    Worker 0:  Batches: 1  Memory Usage: 24kB
+                    Worker 1:  Batches: 1  Memory Usage: 24kB
+                    ->  Parallel Seq Scan on trips  (cost=0.00..257104.39 rows=4544839 width=7) (actual time=0.019..364.550 rows=3635619 loops=3)
+                          Buffers: shared read=211656
+Planning:
+  Buffers: shared hit=38 read=8
+Planning Time: 0.703 ms
+JIT:
+  Functions: 21
+  Options: Inlining false, Optimization false, Expressions true, Deforming true
+  Timing: Generation 1.923 ms, Inlining 0.000 ms, Optimization 0.912 ms, Emission 14.759 ms, Total 17.594 ms
+Execution Time: 1231.463 ms
+  [2-olap] postgres                     explain_execution_time          1,231.463 ms
+  [2-olap] postgres                     mediana_completa                  894.817 ms
+  [2-olap] postgres                     mediana_subconjunto               130.475 ms
+  [2-olap] postgres                     pregunta_nueva                    988.979 ms
+  OK: TODO 3: el GROUP BY a mano da los mismos conteos y promedios que Postgres
+
+
+================================================================================
+PASO 3 - escrituras.py (verifica TODO 4 y TODO 5)
+================================================================================
+
+PS C:\Users\Usuario\Documents\GitHub\lab2-bda> docker compose run --rm app python3 labs/lab2-one-size/escrituras.py
+ ✔ Container ti4601-postgres  Running
+3a: 2000 lecturas y updates por llave
+  [3a-puntual] postgres                     lectura_por_llave_p50               0.155 ms
+  [3a-puntual] postgres                     update_por_llave_p50                0.741 ms
+  [3a-puntual] valkey                       lectura_por_llave_p50               0.162 ms
+  [3a-puntual] valkey                       update_por_llave_p50                0.127 ms
+3b: feed de 10,000 mensajes
+  esperado: 7 alertas, conteos {'1': 6047, '2': 3892, '3': 47, '4': 14}
+  [3b-feed] postgres_commit_por_mensaje  mensajes_por_s                  1,298.174 msg/s
+  [3b-feed] postgres_commit_por_mensaje  leer_respuesta                      0.325 ms
+  OK: postgres_commit_por_mensaje da la respuesta esperada
+  [3b-feed] postgres_commit_asincrono    mensajes_por_s                  6,192.586 msg/s
+  [3b-feed] postgres_commit_asincrono    leer_respuesta                      0.265 ms
+  OK: postgres_commit_asincrono da la respuesta esperada
+  [3b-feed] postgres_lote                mensajes_por_s                 45,506.577 msg/s
+  [3b-feed] postgres_lote                leer_respuesta                      0.369 ms
+  OK: postgres_lote da la respuesta esperada (TODO 5)
+  [3b-feed] valkey_por_mensaje           mensajes_por_s                  7,217.120 msg/s
+  [3b-feed] valkey_por_mensaje           leer_respuesta                      0.304 ms
+  OK: valkey_por_mensaje da la respuesta esperada (TODO 4)
+  [3b-feed] valkey_aof_always            mensajes_por_s                    648.854 msg/s
+  [3b-feed] valkey_aof_always            leer_respuesta                      0.294 ms
+  OK: valkey_aof_always da la respuesta esperada (TODO 4)
+  [3b-feed] valkey_pipeline              mensajes_por_s                 78,340.631 msg/s
+  [3b-feed] valkey_pipeline              leer_respuesta                      0.415 ms
+  OK: valkey_pipeline da la respuesta esperada (TODO 4)
+
+
+================================================================================
+GRAFICAS - graficas.py
+================================================================================
+
+PS C:\Users\Usuario\Documents\GitHub\lab2-bda> docker compose run --rm app python3 labs/lab2-one-size/graficas.py
+ ✔ Container ti4601-postgres  Running
+Gráfica: /src/labs/lab2-one-size/evidence/graficas.png
+Tabla: /src/labs/lab2-one-size/evidence/tabla.md
+
+
+================================================================================
+RESUMEN DE VERIFICACIONES
+================================================================================
+
+Las diez verificaciones automáticas de los cinco TODO pasaron.
+
+  TODO 1  cargar.py       1 verificación   OK
+  TODO 2  cargar.py       2 verificaciones OK
+  TODO 3  analitica.py    1 verificación   OK
+  TODO 4  lua/feed.lua    3 verificaciones OK (las tres variantes de Valkey)
+  TODO 5  escrituras.py   1 verificación   OK (postgres_lote)
+
+Ninguna corrida imprimió "VERIFICACIÓN FALLÓ".
