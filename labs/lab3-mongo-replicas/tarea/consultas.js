@@ -4,10 +4,51 @@ print("índices al inicio          : " + db.eventos.getIndexes().length + " (sol
 print("");
 
 // ---------------------------------------------------------------------
-// A1  (Henry)  conciertos de Heredia entre 2026-12-01 y 2027-02-28
+// A1
 // ---------------------------------------------------------------------
-print("== A1 ==");
+function cadenaEtapas(etapa) {
+  var nombres = [];
+  while (etapa) { nombres.push(etapa.stage); etapa = etapa.inputStage; }
+  return nombres.join(" <- ");
+}
 
+function resumenExplain(caso, stats) {
+  printjson({
+    caso: caso,
+    etapas: cadenaEtapas(stats.executionStages),
+    nReturned: stats.nReturned,
+    totalKeysExamined: stats.totalKeysExamined,
+    totalDocsExamined: stats.totalDocsExamined,
+    executionTimeMillis: stats.executionTimeMillis
+  });
+}
+
+var filtroA1 = {
+  categoria: "concierto",
+  ciudad: "Heredia",
+  fecha: { $gte: "2026-12-01", $lte: "2027-02-28" }
+};
+var proyA1 = { _id: 0, nombre: 1, recinto: 1, fecha: 1 };
+
+print("== A1 ==");
+db.eventos.find(filtroA1, proyA1).sort({ fecha: 1 }).forEach(printjson);
+print("");
+
+print("== A1 explain SIN índice ==");
+resumenExplain("sin índice",
+  db.eventos.find(filtroA1, proyA1).sort({ fecha: 1 })
+            .explain("executionStats").executionStats);
+print("");
+
+print("== A1 índice ==");
+printjson(db.eventos.createIndex({ categoria: 1, ciudad: 1, fecha: 1 },
+                                 { name: "a1_categoria_ciudad_fecha" }));
+print("");
+
+print("== A1 explain CON índice ==");
+resumenExplain("con índice",
+  db.eventos.find(filtroA1, proyA1).sort({ fecha: 1 })
+            .explain("executionStats").executionStats);
 print("");
 
 // ---------------------------------------------------------------------
