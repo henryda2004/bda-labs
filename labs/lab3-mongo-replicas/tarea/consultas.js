@@ -79,12 +79,21 @@ db.eventos.find(
 
 
 // ---------------------------------------------------------------------
-// A3  (Nicol)  etiqueta accesible, categoría distinta de teatro y conferencia
+// A3 
 // ---------------------------------------------------------------------
 print("== A3 ==");
-
-print("");
-
+db.eventos.find(
+  {
+    etiquetas: "accesible",
+    categoria: {
+      $nin: ["teatro", "conferencia"]
+    }
+  },
+  {
+    _id: 0,
+    nombre: 1
+  }
+).forEach(printjson);
 // ---------------------------------------------------------------------
 // A4  (Giancarlo)  eventos sin patrocinador, por categoría
 // ---------------------------------------------------------------------
