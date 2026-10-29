@@ -52,15 +52,31 @@ resumenExplain("con índice",
 print("");
 
 // ---------------------------------------------------------------------
-// A2  (Nicol)  eventos con zona VIP de precio menor a 48000
+// A2  
 // ---------------------------------------------------------------------
 print("== A2 ==");
+// TODO A2
+db.eventos.find(
+  {
+    zonas: {
+      $elemMatch: {
+        nombre: "VIP",
+        precio: { $lt: 48000 }
+      }
+    }
+  },
+  {
+    _id: 0,
+    nombre: 1,
+    zonas: {
+      $elemMatch: {
+        nombre: "VIP",
+        precio: { $lt: 48000 }
+      }
+    }
+  }
+).forEach(printjson);
 
-print("");
-
-print("== A2b sin $elemMatch ==");
-
-print("");
 
 // ---------------------------------------------------------------------
 // A3  (Nicol)  etiqueta accesible, categoría distinta de teatro y conferencia
