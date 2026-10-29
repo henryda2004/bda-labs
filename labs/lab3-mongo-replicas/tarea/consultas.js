@@ -114,13 +114,25 @@ db.eventos.aggregate([
 ).forEach(printjson);
 
 // ---------------------------------------------------------------------
-// A5  (Giancarlo)  capacidad total por ciudad
+// A5 
 // ---------------------------------------------------------------------
 print("== A5 ==");
-
-print("");
+db.eventos.aggregate([
+  {$unwind: "$zonas"},
+  {$group: {_id: "$ciudad", capacidad_total: {$sum: "$zonas.capacidad"}}},
+  {$project: {_id: 0, ciudad: "$_id", capacidad_total: 1}},
+  {$sort: {capacidad_total: -1, ciudad: 1}}
+]
+).forEach(printjson);
 
 // ---------------------------------------------------------------------
-// Parte B  (Giancarlo)  tamaño de una orden de ejemplo
+// Parte B  
 // ---------------------------------------------------------------------
 print("== B bsonsize ==");
+printjson(db.eventos.find(filtroA1, proyeccionA1)
+  .sort({fecha: 1}).explain("executionStats"));
+printjson(db.eventos.createIndex(
+  {categoria: 1, ciudad: 1, fecha: 1}, {name: "idx_a1"}));
+// Despues:
+printjson(db.eventos.find(filtroA1, proyeccionA1)
+  .sort({fecha: 1}).explain("executionStats"));
