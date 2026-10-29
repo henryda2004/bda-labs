@@ -95,11 +95,23 @@ db.eventos.find(
   }
 ).forEach(printjson);
 // ---------------------------------------------------------------------
-// A4  (Giancarlo)  eventos sin patrocinador, por categoría
+// A4 
 // ---------------------------------------------------------------------
 print("== A4 ==");
-
-print("");
+db.eventos.aggregate([
+  {$match: 
+    {patrocinador: {$exists: false}}
+  },
+  {$group: 
+    {_id: "$categoria", cantidad: {$sum: 1}}
+  },
+  {$project: 
+    {_id: 0, categoria: "$_id", cantidad: 1}
+  },
+  {$sort: 
+    {categoria: 1}}
+]
+).forEach(printjson);
 
 // ---------------------------------------------------------------------
 // A5  (Giancarlo)  capacidad total por ciudad
