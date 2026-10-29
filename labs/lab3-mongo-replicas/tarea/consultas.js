@@ -128,11 +128,33 @@ db.eventos.aggregate([
 // ---------------------------------------------------------------------
 // Parte B  
 // ---------------------------------------------------------------------
+print("== A2b sin $elemMatch ==");
+printjson({
+  con_elemMatch: db.eventos.countDocuments(
+    { zonas: { $elemMatch: { nombre: "VIP", precio: { $lt: 48000 } } } }),
+  sin_elemMatch: db.eventos.countDocuments(
+    { "zonas.nombre": "VIP", "zonas.precio": { $lt: 48000 } })
+});
+print("");
+
 print("== B bsonsize ==");
-printjson(db.eventos.find(filtroA1, proyeccionA1)
-  .sort({fecha: 1}).explain("executionStats"));
-printjson(db.eventos.createIndex(
-  {categoria: 1, ciudad: 1, fecha: 1}, {name: "idx_a1"}));
-// Despues:
-printjson(db.eventos.find(filtroA1, proyeccionA1)
-  .sort({fecha: 1}).explain("executionStats"));
+var ordenEjemplo = {
+  _id: "ORD-000001", evento_id: "EV-0001", zona: "VIP",
+  cantidad: 2, estado: "pendiente",
+  creada_en: ISODate("2026-10-26T18:00:00Z")
+};
+var ev = db.eventos.findOne({ _id: "EV-0001" });
+ev.ordenes = [];
+var bytesOrden = Object.bsonsize(ordenEjemplo);
+var total = Object.bsonsize(ev);
+var limite = 16 * 1024 * 1024;
+var n = 0;
+while (total + bytesOrden + 2 + String(n).length <= limite) {
+  total = total + bytesOrden + 2 + String(n).length;
+  n++;
+}
+printjson({
+  bytes_orden: bytesOrden,
+  bytes_evento_con_ordenes_vacio: Object.bsonsize(ev),
+  limite_bytes: limite, ordenes_que_caben: n, bytes_finales: total
+});
