@@ -145,8 +145,8 @@ var ordenEjemplo = {
 };
 var ev = db.eventos.findOne({ _id: "EV-0001" });
 ev.ordenes = [];
-var bytesOrden = Object.bsonsize(ordenEjemplo);
-var total = Object.bsonsize(ev);
+var bytesOrden = bsonsize(ordenEjemplo);
+var total = bsonsize(ev);
 var limite = 16 * 1024 * 1024;
 var n = 0;
 while (total + bytesOrden + 2 + String(n).length <= limite) {
@@ -155,6 +155,6 @@ while (total + bytesOrden + 2 + String(n).length <= limite) {
 }
 printjson({
   bytes_orden: bytesOrden,
-  bytes_evento_con_ordenes_vacio: Object.bsonsize(ev),
+  bytes_evento_con_ordenes_vacio: bsonsize(ev),
   limite_bytes: limite, ordenes_que_caben: n, bytes_finales: total
 });

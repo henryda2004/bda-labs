@@ -2542,4 +2542,10 @@ a1_categoria_ciudad_fecha
 }
 
 == B bsonsize ==
-TypeError: Object.bsonsize is not a function
+{
+  bytes_orden: 117,
+  bytes_evento_con_ordenes_vacio: 522,
+  limite_bytes: 16777216,
+  ordenes_que_caben: 135102,
+  bytes_finales: 16777162
+}
