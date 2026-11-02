@@ -25,46 +25,40 @@ from pymongo.database import Database
 from common import BD, DATA, conectar, fallo, manifest, ok
 
 
+"Lee los eventos del JSONL, los inserta por lotes y devuelve el total insertado."
 def cargar_eventos(db: Database, ruta: Path, lote: int = 500) -> int:
-    """TODO 1 — Cargue ``eventos.jsonl`` en la colección ``eventos`` y devuelva cuántos insertó.
+    if lote <= 0:
+        raise ValueError("El tamaño del lote debe ser mayor que cero")
 
-    Pasos:
+    documentos = []
+    total = 0
 
-    1. Lea el archivo línea por línea; cada línea es un documento JSON (``json.loads``).
-       No cargue el archivo completo en memoria: acumule hasta ``lote`` documentos.
-    2. Inserte cada lote con ``insert_many``. Piense qué hace ``ordered=False`` cuando
-       un documento falla y por qué conviene aquí.
-    3. Cada documento ya trae su ``_id`` (``EV-0001``…): no deje que MongoDB genere otro.
-    4. Acuérdese del último lote, que casi nunca está completo.
+    with ruta.open("r", encoding="utf-8") as archivo:
+        for linea in archivo:
+            documentos.append(json.loads(linea))
 
-    La conexión que recibe ya usa ``w="majority"``: cada ``insert_many`` espera a que
-    una mayoría de miembros tenga el lote. No hace falta repetirlo aquí, pero en el
-    informe debe poder explicar qué esperó cada llamada.
-    """
-    raise NotImplementedError("TODO 1: cargar_eventos")
+            if len(documentos) == lote:
+                resultado = db.eventos.insert_many(documentos, ordered=False)
+                total += len(resultado.inserted_ids)
+                documentos = []
 
+    if documentos:
+        resultado = db.eventos.insert_many(documentos, ordered=False)
+        total += len(resultado.inserted_ids)
 
+    return total
+
+"Crea los índices compuestos de eventos, órdenes y devuelve sus nombres."
 def crear_indices(db: Database) -> list[str]:
-    """TODO 2 — Cree los dos índices mínimos del laboratorio y devuelva sus nombres.
+    indice_eventos = db.eventos.create_index(
+        [("categoria", ASCENDING), ("fecha", ASCENDING)]
+    )
 
-    Las dos consultas que deben ser eficientes:
+    indice_ordenes = db.ordenes.create_index(
+        [("evento_id", ASCENDING), ("estado", ASCENDING)]
+    )
 
-    a) ``eventos``: los eventos de una categoría desde cierta fecha, en orden de fecha::
-
-           db.eventos.find({"categoria": c, "fecha": {"$gte": d}}).sort("fecha", 1)
-
-    b) ``ordenes``: cuántas órdenes de un evento hay en cada estado::
-
-           db.ordenes.count_documents({"evento_id": e, "estado": s})
-
-    Defina un índice compuesto para cada una. El orden de los campos importa: ponga
-    primero los campos de igualdad y después el de rango u orden. Justifique su
-    elección en el informe con ``explain()`` (Paso 5).
-
-    Use ``create_index`` con una lista de pares ``(campo, ASCENDING)``.
-    """
-    raise NotImplementedError("TODO 2: crear_indices")
-
+    return [indice_eventos, indice_ordenes]
 
 def verificar_carga(db: Database, devueltos: int, m: dict) -> bool:
     bien = True

@@ -1,0 +1,322 @@
+== CON INDICE ==
+{
+  explainVersion: '1',
+  queryPlanner: {
+    namespace: 'boleteria.eventos',
+    parsedQuery: {
+      '$and': [
+        {
+          categoria: {
+            '$eq': 'concierto'
+          }
+        },
+        {
+          fecha: {
+            '$gte': '2026-12-01'
+          }
+        }
+      ]
+    },
+    indexFilterSet: false,
+    queryHash: '4776339B',
+    planCacheShapeHash: '4776339B',
+    planCacheKey: 'FF6697B0',
+    optimizationTimeMillis: 0,
+    maxIndexedOrSolutionsReached: false,
+    maxIndexedAndSolutionsReached: false,
+    maxScansToExplodeReached: false,
+    prunedSimilarIndexes: false,
+    winningPlan: {
+      isCached: false,
+      stage: 'FETCH',
+      inputStage: {
+        stage: 'IXSCAN',
+        keyPattern: {
+          categoria: 1,
+          fecha: 1
+        },
+        indexName: 'categoria_1_fecha_1',
+        isMultiKey: false,
+        multiKeyPaths: {
+          categoria: [],
+          fecha: []
+        },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: {
+          categoria: [
+            '["concierto", "concierto"]'
+          ],
+          fecha: [
+            '["2026-12-01", {})'
+          ]
+        }
+      }
+    },
+    rejectedPlans: []
+  },
+  executionStats: {
+    executionSuccess: true,
+    nReturned: 67,
+    executionTimeMillis: 2,
+    totalKeysExamined: 67,
+    totalDocsExamined: 67,
+    executionStages: {
+      isCached: false,
+      stage: 'FETCH',
+      nReturned: 67,
+      executionTimeMillisEstimate: 0,
+      works: 68,
+      advanced: 67,
+      needTime: 0,
+      needYield: 0,
+      saveState: 0,
+      restoreState: 0,
+      isEOF: 1,
+      docsExamined: 67,
+      alreadyHasObj: 0,
+      inputStage: {
+        stage: 'IXSCAN',
+        nReturned: 67,
+        executionTimeMillisEstimate: 0,
+        works: 68,
+        advanced: 67,
+        needTime: 0,
+        needYield: 0,
+        saveState: 0,
+        restoreState: 0,
+        isEOF: 1,
+        keyPattern: {
+          categoria: 1,
+          fecha: 1
+        },
+        indexName: 'categoria_1_fecha_1',
+        isMultiKey: false,
+        multiKeyPaths: {
+          categoria: [],
+          fecha: []
+        },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: {
+          categoria: [
+            '["concierto", "concierto"]'
+          ],
+          fecha: [
+            '["2026-12-01", {})'
+          ]
+        },
+        keysExamined: 67,
+        seeks: 1,
+        dupsTested: 0,
+        dupsDropped: 0
+      }
+    }
+  },
+  queryShapeHash: '1897C032277BAB0535F5723B5B7E44E8F913F5E1D0C3635C745515F2516DFACA',
+  command: {
+    find: 'eventos',
+    filter: {
+      categoria: 'concierto',
+      fecha: {
+        '$gte': '2026-12-01'
+      }
+    },
+    sort: {
+      fecha: 1
+    },
+    '$db': 'boleteria'
+  },
+  serverInfo: {
+    host: 'mongo-1',
+    port: 27017,
+    version: '8.0.34',
+    gitVersion: '51db4515a6597aedcf6188ee4e48a27e65b065ae'
+  },
+  serverParameters: {
+    internalQueryFacetBufferSizeBytes: 104857600,
+    internalQueryFacetMaxOutputDocSizeBytes: 104857600,
+    internalLookupStageIntermediateDocumentMaxSizeBytes: 104857600,
+    internalDocumentSourceGroupMaxMemoryBytes: 104857600,
+    internalQueryMaxBlockingSortMemoryUsageBytes: 104857600,
+    internalQueryProhibitBlockingMergeOnMongoS: 0,
+    internalQueryMaxAddToSetBytes: 104857600,
+    internalDocumentSourceSetWindowFieldsMaxMemoryBytes: 104857600,
+    internalQueryFrameworkControl: 'trySbeRestricted',
+    internalQueryPlannerIgnoreIndexWithCollationForRegex: 1
+  },
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1793643342, i: 1 }),
+    signature: {
+      hash: Binary.createFromBase64('AAAAAAAAAAAAAAAAAAAAAAAAAAA=', 0),
+      keyId: Long('0')
+    }
+  },
+  operationTime: Timestamp({ t: 1793643342, i: 1 })
+}
+== RECORRIDO COMPLETO ==
+{
+  explainVersion: '1',
+  queryPlanner: {
+    namespace: 'boleteria.eventos',
+    parsedQuery: {
+      '$and': [
+        {
+          categoria: {
+            '$eq': 'concierto'
+          }
+        },
+        {
+          fecha: {
+            '$gte': '2026-12-01'
+          }
+        }
+      ]
+    },
+    indexFilterSet: false,
+    queryHash: '4776339B',
+    planCacheShapeHash: '4776339B',
+    planCacheKey: 'FF6697B0',
+    optimizationTimeMillis: 0,
+    maxIndexedOrSolutionsReached: false,
+    maxIndexedAndSolutionsReached: false,
+    maxScansToExplodeReached: false,
+    prunedSimilarIndexes: false,
+    winningPlan: {
+      isCached: false,
+      stage: 'SORT',
+      sortPattern: {
+        fecha: 1
+      },
+      memLimit: 104857600,
+      type: 'simple',
+      inputStage: {
+        stage: 'COLLSCAN',
+        filter: {
+          '$and': [
+            {
+              categoria: {
+                '$eq': 'concierto'
+              }
+            },
+            {
+              fecha: {
+                '$gte': '2026-12-01'
+              }
+            }
+          ]
+        },
+        direction: 'forward'
+      }
+    },
+    rejectedPlans: []
+  },
+  executionStats: {
+    executionSuccess: true,
+    nReturned: 67,
+    executionTimeMillis: 0,
+    totalKeysExamined: 0,
+    totalDocsExamined: 400,
+    executionStages: {
+      isCached: false,
+      stage: 'SORT',
+      nReturned: 67,
+      executionTimeMillisEstimate: 0,
+      works: 469,
+      advanced: 67,
+      needTime: 401,
+      needYield: 0,
+      saveState: 0,
+      restoreState: 0,
+      isEOF: 1,
+      sortPattern: {
+        fecha: 1
+      },
+      memLimit: 104857600,
+      type: 'simple',
+      totalDataSizeSorted: 32044,
+      usedDisk: false,
+      spills: 0,
+      spilledDataStorageSize: 0,
+      inputStage: {
+        stage: 'COLLSCAN',
+        filter: {
+          '$and': [
+            {
+              categoria: {
+                '$eq': 'concierto'
+              }
+            },
+            {
+              fecha: {
+                '$gte': '2026-12-01'
+              }
+            }
+          ]
+        },
+        nReturned: 67,
+        executionTimeMillisEstimate: 0,
+        works: 401,
+        advanced: 67,
+        needTime: 333,
+        needYield: 0,
+        saveState: 0,
+        restoreState: 0,
+        isEOF: 1,
+        direction: 'forward',
+        docsExamined: 400
+      }
+    }
+  },
+  queryShapeHash: '1897C032277BAB0535F5723B5B7E44E8F913F5E1D0C3635C745515F2516DFACA',
+  command: {
+    find: 'eventos',
+    filter: {
+      categoria: 'concierto',
+      fecha: {
+        '$gte': '2026-12-01'
+      }
+    },
+    sort: {
+      fecha: 1
+    },
+    hint: {
+      '$natural': 1
+    },
+    '$db': 'boleteria'
+  },
+  serverInfo: {
+    host: 'mongo-1',
+    port: 27017,
+    version: '8.0.34',
+    gitVersion: '51db4515a6597aedcf6188ee4e48a27e65b065ae'
+  },
+  serverParameters: {
+    internalQueryFacetBufferSizeBytes: 104857600,
+    internalQueryFacetMaxOutputDocSizeBytes: 104857600,
+    internalLookupStageIntermediateDocumentMaxSizeBytes: 104857600,
+    internalDocumentSourceGroupMaxMemoryBytes: 104857600,
+    internalQueryMaxBlockingSortMemoryUsageBytes: 104857600,
+    internalQueryProhibitBlockingMergeOnMongoS: 0,
+    internalQueryMaxAddToSetBytes: 104857600,
+    internalDocumentSourceSetWindowFieldsMaxMemoryBytes: 104857600,
+    internalQueryFrameworkControl: 'trySbeRestricted',
+    internalQueryPlannerIgnoreIndexWithCollationForRegex: 1
+  },
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1793643342, i: 1 }),
+    signature: {
+      hash: Binary.createFromBase64('AAAAAAAAAAAAAAAAAAAAAAAAAAA=', 0),
+      keyId: Long('0')
+    }
+  },
+  operationTime: Timestamp({ t: 1793643342, i: 1 })
+}
