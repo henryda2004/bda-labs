@@ -1,0 +1,65 @@
+== OPLOG ==
+{
+  lsid: {
+    id: UUID('ab8ff6fc-2ee7-4b37-9d22-3042d9f76426'),
+    uid: Binary.createFromBase64('47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=', 0)
+  },
+  txnNumber: Long('1'),
+  op: 'i',
+  ns: 'boleteria.ordenes',
+  ui: UUID('3db65bca-8b53-4786-b72b-1b2b216ce1d8'),
+  o: {
+    _id: 'ORD-MANUAL-1',
+    evento_id: 'EV-0001',
+    zona: 'General',
+    cantidad: 2,
+    estado: 'confirmada'
+  },
+  o2: {
+    _id: 'ORD-MANUAL-1'
+  },
+  stmtId: 0,
+  ts: Timestamp({ t: 1793644028, i: 1 }),
+  t: Long('1'),
+  v: Long('2'),
+  wall: ISODate('2026-11-02T18:27:08.350Z'),
+  prevOpTime: {
+    ts: Timestamp({ t: 0, i: 0 }),
+    t: Long('-1')
+  }
+}
+source: mongo-2:27017
+{
+  syncedTo: 'Mon Nov 02 2026 18:32:24 GMT+0000 (Coordinated Universal Time)',
+  replLag: '0 secs (0 hrs) behind the primary '
+}
+---
+source: mongo-3:27017
+{
+  syncedTo: 'Mon Nov 02 2026 18:32:24 GMT+0000 (Coordinated Universal Time)',
+  replLag: '0 secs (0 hrs) behind the primary '
+}
+== LECTURA EN SECUNDARIO ==
+{
+  _id: 'ORD-MANUAL-1',
+  evento_id: 'EV-0001',
+  zona: 'General',
+  cantidad: 2,
+  estado: 'confirmada'
+}
+== ESCRITURA EN SECUNDARIO ==
+{
+  codigo: 10107,
+  nombre: 'NotWritablePrimary',
+  mensaje: 'not primary'
+}
+{
+  configuredLogSizeMB: 48389.354248046875,
+  logSizeMB: 48389.354248046875,
+  usedMB: 1.63,
+  timeDiff: 2629,
+  timeDiffHours: 0.73,
+  tFirst: 'Mon Nov 02 2026 17:50:13 GMT+0000 (Coordinated Universal Time)',
+  tLast: 'Mon Nov 02 2026 18:34:02 GMT+0000 (Coordinated Universal Time)',
+  now: 'Mon Nov 02 2026 18:34:07 GMT+0000 (Coordinated Universal Time)'
+}

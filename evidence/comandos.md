@@ -19,3 +19,8 @@ Carga: cargar.py --lote 100; cinco verificaciones OK.
 Verificacion: make lab3-check; resultado 6/6.
 Explain: indice IXSCAN, 67 documentos y 67 claves; recorrido COLLSCAN, 400 documentos y 0 claves. Ambos devuelven 67 resultados.
 Evidencias: carga.txt, config-check.txt, explain-indices.txt.
+
+## Paso 6 — OK (2026-11-02T12:36:41-06:00)
+Comandos: insertOne en el primario; consulta de local.oplog.rs; rs.printSecondaryReplicationInfo(); db.getReplicationInfo(); lectura e intento de escritura en mongo-2.
+Resultado: ORD-MANUAL-1 replicada; secundarios con retraso 0 s; escritura rechazada con NotWritablePrimary (10107); ventana observada del oplog de 2629 s.
+Evidencia: oplog.txt.
