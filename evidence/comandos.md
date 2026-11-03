@@ -35,3 +35,9 @@ Comando: docker compose --profile lab3 run --rm --no-deps app-mongo sh -c "pytho
 Resultado: seis verificaciones OK; 120 confirmadas y 80 agotadas sobre 200 compradores; quedan 0 entradas.
 Version rota a proposito (leer, decidir en Python, escribir): 151 confirmadas, quedan -31; VIP 3 confirmadas, quedan -2. Las verificaciones secuenciales (idempotencia y zona inexistente) siguieron pasando.
 Evidencias: comprar.txt, comprar-roto.txt.
+
+## Paso 9 — OK (2026-11-02T18:43-06:00)
+Comando: docker compose --profile lab3 run --rm --no-deps app-mongo sh -c "python3 labs/lab3-mongo-replicas/bench_write_concern.py --n 300 --csv evidence/write-concern.csv > evidence/write-concern.txt 2>&1"
+Resultado (p50 ms): w1 0.78; w1_journal 1.79; majority 2.53; w3 1.63. n=300 por variante, calentamiento 30.
+Observacion: w3 resulto mas rapida que majority porque majority activa el journal por defecto (writeConcernMajorityJournalDefault).
+Evidencias: write-concern.txt, write-concern.csv.
