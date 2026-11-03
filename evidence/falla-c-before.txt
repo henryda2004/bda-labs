@@ -1,0 +1,8 @@
+NAME             IMAGE       COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+ti4601-mongo-1   mongo:8.0   "docker-entrypoint.sÔÇª"   mongo-1   50 minutes ago   Up 2 minutes (healthy)    27017/tcp
+ti4601-mongo-2   mongo:8.0   "docker-entrypoint.sÔÇª"   mongo-2   50 minutes ago   Up 11 minutes (healthy)   27017/tcp
+ti4601-mongo-3   mongo:8.0   "docker-entrypoint.sÔÇª"   mongo-3   50 minutes ago   Up 50 minutes (healthy)   27017/tcp
+mongo-1:27017  SECONDARY  health=1
+mongo-2:27017  SECONDARY  health=1
+mongo-3:27017  PRIMARY  health=1
+term=2
