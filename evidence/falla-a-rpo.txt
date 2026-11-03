@@ -1,0 +1,11 @@
+Corrida r84ab8622
+  intentos .............. 100
+  confirmados (ok) ...... 100
+  con error ............. 0
+  presentes en la base .. 100  (readConcern majority)
+  PERDIDOS (confirmados ausentes) ......... 0  []
+  errores que SÍ se escribieron ........... 0  []
+  errores que NO se escribieron ........... 0
+  inesperados (presentes, nunca intentados) 0
+
+RPO observado sobre operaciones confirmadas: 0 (ninguna se perdió)
