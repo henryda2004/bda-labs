@@ -1,0 +1,11 @@
+Corrida r06553726
+  intentos .............. 123
+  confirmados (ok) ...... 120
+  con error ............. 3
+  presentes en la base .. 120  (readConcern majority)
+  PERDIDOS (confirmados ausentes) ......... 0  []
+  errores que SÍ se escribieron ........... 0  []
+  errores que NO se escribieron ........... 3
+  inesperados (presentes, nunca intentados) 0
+
+RPO observado sobre operaciones confirmadas: 0 (ninguna se perdió)

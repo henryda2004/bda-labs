@@ -1,0 +1,4 @@
+mongo-1:27017  (not reachable/healthy)  health=0
+mongo-2:27017  SECONDARY  health=1
+mongo-3:27017  PRIMARY  health=1
+term=2
