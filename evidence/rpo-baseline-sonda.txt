@@ -1,0 +1,26 @@
+[Base] run=r21e75413 w=majority wtimeout=2000 ms retryWrites=True
+antes-falla   ok    seq=0         19.4 ms 
+antes-falla   ok    seq=1          2.9 ms 
+antes-falla   ok    seq=2          2.9 ms 
+antes-falla   ok    seq=3          3.8 ms 
+antes-falla   ok    seq=4          4.6 ms 
+antes-falla   ok    seq=5          2.7 ms 
+antes-falla   ok    seq=6          3.2 ms 
+antes-falla   ok    seq=7          3.3 ms 
+antes-falla   ok    seq=8          3.0 ms 
+antes-falla   ok    seq=9          3.0 ms 
+antes-falla   ok    seq=10         3.3 ms 
+antes-falla   ok    seq=11         3.1 ms 
+antes-falla   ok    seq=12        10.4 ms 
+antes-falla   ok    seq=13         3.3 ms 
+antes-falla   ok    seq=14         3.3 ms 
+antes-falla   ok    seq=15         3.5 ms 
+antes-falla   ok    seq=16         5.1 ms 
+antes-falla   ok    seq=17         2.8 ms 
+antes-falla   ok    seq=18         4.0 ms 
+antes-falla   ok    seq=19         3.1 ms 
+
+Intentos: 20 · confirmados: 20 · errores: 0
+No se leyó señal de falla: no se calcula RTO.
+
+Evidencia: evidence/rpo-baseline.csv  (run=r21e75413)
