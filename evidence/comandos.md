@@ -24,3 +24,8 @@ Evidencias: carga.txt, config-check.txt, explain-indices.txt.
 Comandos: insertOne en el primario; consulta de local.oplog.rs; rs.printSecondaryReplicationInfo(); db.getReplicationInfo(); lectura e intento de escritura en mongo-2.
 Resultado: ORD-MANUAL-1 replicada; secundarios con retraso 0 s; escritura rechazada con NotWritablePrimary (10107); ventana observada del oplog de 2629 s.
 Evidencia: oplog.txt.
+
+## Paso 7 — OK (2026-11-02T18:26-06:00)
+Comando: docker compose --profile lab3 run --rm --no-deps app-mongo sh -c "python3 labs/lab3-mongo-replicas/lectura_secundario.py --n 500 --csv evidence/lectura-secundario.csv > evidence/lectura-secundario.txt 2>&1"
+Resultado: w1_secundario 497/500 obsoletas (99.4%); majority_secundario 0/500 (0.0%); causal_majority 0/500 (0.0%).
+Evidencias: lectura-secundario.txt, lectura-secundario.csv.

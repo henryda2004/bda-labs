@@ -1,0 +1,7 @@
+modo                        n  obsoletas  % obsoletas
+w1_secundario             500        497        99.4%
+majority_secundario       500          0         0.0%
+causal_majority           500          0         0.0%
+
+Resumen: evidence/lectura-secundario.csv
+Recuerde: los tres miembros comparten una computadora; en una red real el retraso de replicación sería mayor.
