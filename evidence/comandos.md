@@ -29,3 +29,9 @@ Evidencia: oplog.txt.
 Comando: docker compose --profile lab3 run --rm --no-deps app-mongo sh -c "python3 labs/lab3-mongo-replicas/lectura_secundario.py --n 500 --csv evidence/lectura-secundario.csv > evidence/lectura-secundario.txt 2>&1"
 Resultado: w1_secundario 497/500 obsoletas (99.4%); majority_secundario 0/500 (0.0%); causal_majority 0/500 (0.0%).
 Evidencias: lectura-secundario.txt, lectura-secundario.csv.
+
+## Paso 8 — OK (2026-11-02T18:40-06:00)
+Comando: docker compose --profile lab3 run --rm --no-deps app-mongo sh -c "python3 labs/lab3-mongo-replicas/comprar.py > evidence/comprar.txt 2>&1"
+Resultado: seis verificaciones OK; 120 confirmadas y 80 agotadas sobre 200 compradores; quedan 0 entradas.
+Version rota a proposito (leer, decidir en Python, escribir): 151 confirmadas, quedan -31; VIP 3 confirmadas, quedan -2. Las verificaciones secuenciales (idempotencia y zona inexistente) siguieron pasando.
+Evidencias: comprar.txt, comprar-roto.txt.
