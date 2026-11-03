@@ -41,3 +41,27 @@ Comando: docker compose --profile lab3 run --rm --no-deps app-mongo sh -c "pytho
 Resultado (p50 ms): w1 0.78; w1_journal 1.79; majority 2.53; w3 1.63. n=300 por variante, calentamiento 30.
 Observacion: w3 resulto mas rapida que majority porque majority activa el journal por defecto (writeConcernMajorityJournalDefault).
 Evidencias: write-concern.txt, write-concern.csv.
+
+## Paso 10 - OK (2026-11-02T18:45-06:00)
+Comando: sonda_escrituras.py --label Base con w majority y wtimeout 2000 ms, sin falla; luego verificar_rpo.py --csv evidence/rpo-baseline.csv > evidence/rpo-baseline.txt
+Resultado: 20 intentos, 20 confirmados, 0 errores; presentes 20; perdidos 0; RPO 0. Sin senal de falla, no se calcula RTO.
+Evidencias: rpo-baseline-sonda.txt, rpo-baseline.csv, rpo-baseline.txt.
+
+## Paso 11 - OK (2026-11-02T18:59-06:00)
+Falla A, cae un secundario (mongo-2). Senal de falla a las 18:58:00.
+Comando: docker compose --profile lab3 run --rm --no-deps app-mongo sh -c "python3 -u labs/lab3-mongo-replicas/sonda_escrituras.py --duration 50 --label FallaA --signal-file evidence/falla-a-stop.epoch --csv evidence/falla-a.csv 2>&1 | tee evidence/falla-a.txt"
+Resultado: 100 intentos, 100 confirmados, 0 errores; primera escritura confirmada tras la senal a 97 ms; perdidos 0; RPO 0. Estado durante la falla: mongo-1 PRIMARY, mongo-3 SECONDARY, mongo-2 inalcanzable.
+Evidencias: falla-a-before.txt, falla-a-stop.txt, falla-a-stop.epoch, falla-a-status.txt, falla-a.txt, falla-a.csv, falla-a-recovered.txt, falla-a-rpo.txt.
+
+## Paso 12 - OK (2026-11-02T19:08-06:00)
+Falla B, cae el primario (mongo-1). Senal de falla a las 19:06:30.
+Comando: docker compose --profile lab3 run --rm --no-deps app-mongo sh -c "python3 -u labs/lab3-mongo-replicas/sonda_escrituras.py --duration 70 --label FallaB --signal-file evidence/falla-b-stop.epoch --csv evidence/falla-b.csv 2>&1 | tee evidence/falla-b.txt"
+Resultado: 123 intentos, 120 confirmados, 3 ServerSelectionTimeoutError; RTO 10336 ms (primera escritura confirmada tras la senal, tomado del CSV); ventana sin escrituras confirmadas 10779 ms; nuevo primario mongo-3, term 2; perdidos 0; errores que si se escribieron 0; RPO 0.
+Evidencias: falla-b-before.txt, falla-b-stop.txt, falla-b-stop.epoch, falla-b-status.txt, falla-b.txt, falla-b.csv, falla-b-recovered.txt, falla-b-rpo.txt.
+
+## Paso 13 - OK (2026-11-02T19:12-06:00)
+Falla C, caen mongo-1 y mongo-2 y queda solo mongo-3, sin mayoria. Senal de falla a las 19:10:08.
+Comando: docker compose --profile lab3 run --rm --no-deps app-mongo sh -c "python3 -u labs/lab3-mongo-replicas/sonda_escrituras.py --duration 90 --label FallaC --w majority --wtimeout-ms 2000 --signal-file evidence/falla-c-stop.epoch --csv evidence/falla-c.csv 2>&1 | tee evidence/falla-c.txt"
+Resultado: 111 intentos, 97 confirmados, 14 con error (9 ServerSelectionTimeoutError, 4 WTimeoutError, 1 WriteConcernError). mongo-3 quedo SECONDARY. Primera escritura confirmada a 41451 ms de la senal; ventana sin escrituras confirmadas 42069 ms. Presentes 102; perdidos 0; errores que si se escribieron 5 (seq 15 a 19); errores que no se escribieron 9; RPO 0 sobre confirmadas.
+Recuperacion: los tres nodos healthy, mongo-1 PRIMARY, term 3, un primario y dos secundarios.
+Evidencias: falla-c-before.txt, falla-c-stop.txt, falla-c-stop.epoch, falla-c-status.txt, falla-c.txt, falla-c.csv, falla-c-recovered.txt, falla-c-rpo.txt.
